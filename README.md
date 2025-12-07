@@ -66,4 +66,121 @@ GCP Deployment:
 - **Idle Vending**: Set up automated kiosks with your bots to "vend" extras offline, yielding passive trades when visitors browse. Opt-in for group features like shared energy pools for collaborative tasks.
 - **Ties to Desiderata**: Fosters social interaction (2) and transparent economy (7) without pressure; inclusive for casual browsing or hardcore alliances. Optimized with Socket.io for real-time sync in hubs.
 
+## Development Roadmap
+
+### Phase 1: Foundation (Basic Space Exploration)
+1. **Project Setup**
+   - Initialize Bun workspace with frontend/backend structure
+   - Set up React + Vite + Three.js + React Three Fiber
+   - Configure basic Elysia server with Socket.io
+   - Add basic 3D scene with camera controls
+
+2. **Space Scene & Controls**
+   - Create starfield background
+   - Add player ship model (simple geometric shape)
+   - Implement WASD + mouse look controls
+   - Add basic physics (velocity, rotation)
+
+3. **Procedural Star Systems**
+   - Generate random star positions
+   - Add planet markers around stars
+   - Implement distance-based LOD for performance
+   - Add basic UI for system information
+
+### Phase 2: Planetary Interaction (Core Loop)
+4. **Landing System**
+   - Planet selection and approach mechanics
+   - Transition from space to planetary surface view
+   - Basic terrain generation (heightmap-based)
+   - Surface movement controls
+
+5. **Resource Collection**
+   - Place resource nodes on planets (minerals, energy crystals)
+   - Point-and-click harvesting mechanics
+   - Basic inventory system (localStorage initially)
+   - Visual feedback for collection actions
+
+6. **Idle Automation**
+   - Robot entities that can be assigned to tasks
+   - Basic AI for resource gathering
+   - Offline progress simulation (time-based accumulation)
+   - Robot upgrade system
+
+### Phase 3: Base Building (Progression)
+7. **Base Building Foundation**
+   - Grid-based placement system
+   - Basic modules (solar collectors, storage, robot bays)
+   - Resource requirements for construction
+   - Save/load base layouts
+
+8. **Energy Economy**
+   - Solar power generation mechanics
+   - Energy consumption for actions/robots
+   - Battery storage system
+   - Daily energy limits and recharging
+
+9. **Base Automation**
+   - Connect modules for automated processes
+   - Robot spawning and task assignment
+   - Offline base progression
+   - Visual effects for active systems
+
+### Phase 4: Social Features (Multiplayer)
+10. **Basic Multiplayer**
+    - Player presence in shared spaces
+    - Real-time position sync via Socket.io
+    - Simple chat system
+    - View other players' bases/ships
+
+11. **Trading System**
+    - Direct player-to-player trading interface
+    - Resource exchange mechanics
+    - Basic escrow system for security
+    - Trade history/logs
+
+12. **Social Hubs**
+    - Dedicated multiplayer spaces (space stations)
+    - Emote system and social interactions
+    - Collaborative activities setup
+    - Hub customization
+
+### Phase 5: Polish & Scale (Advanced Features)
+13. **Advanced Mechanics**
+    - Combat system (optional PvP/PvE)
+    - Advanced AI for NPC encounters
+    - Quest/mission system
+    - Achievement system
+
+14. **Performance & Polish**
+    - Optimize rendering (frustum culling, instancing)
+    - Add sound effects and music
+    - Mobile controls and responsiveness
+    - UI/UX improvements
+
+15. **Backend Scaling**
+    - Database integration (Postgres/Firestore)
+    - Authentication system
+    - Colyseus integration for authoritative server
+    - Cross-server player sync
+
+### Phase 6: Production (GCP Deployment)
+16. **Cloud Infrastructure**
+    - Containerize with Docker (oven/bun base)
+    - Deploy to Cloud Run
+    - Set up Cloud Storage for assets
+    - Configure monitoring and logging
+
+17. **Advanced Scaling**
+    - Agones for game server fleets
+    - Global Load Balancer setup
+    - CDN for asset delivery
+    - Pub/Sub for async events
+
+### Development Principles
+- **Start Small**: Each phase should be playable and demonstrate core value
+- **Test Early**: Get user feedback after each major feature
+- **Iterate Quickly**: Focus on core exploration loop before advanced features
+- **Performance First**: Optimize 3D rendering and networking from the start
+- **Modular Design**: Keep features independent for easier testing and iteration
+
 
