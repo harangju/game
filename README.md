@@ -72,7 +72,7 @@ GCP Deployment:
 1. **Project Setup**
    - Initialize Bun workspace with frontend/backend structure
    - Set up React + Vite + Three.js + React Three Fiber
-   - Configure basic Elysia server with Socket.io
+   - Configure basic Elysia server
    - Add basic 3D scene with camera controls
 
 2. **Space Scene & Controls**
@@ -127,6 +127,7 @@ GCP Deployment:
 
 ### Phase 4: Social Features (Multiplayer)
 10. **Basic Multiplayer**
+    - Set up Socket.io integration with Elysia server
     - Player presence in shared spaces
     - Real-time position sync via Socket.io
     - Simple chat system
