@@ -141,38 +141,38 @@ GCP Deployment:
 ## Development Roadmap
 
 ### Phase 1: Foundation (Basic Space Exploration)
-1. **Project Setup**
+1. **Project Setup** ✅
    - Initialize Bun workspace with frontend/backend structure
    - Set up React + Vite + Three.js + React Three Fiber
    - Configure basic Elysia server
    - Add basic 3D scene with camera controls
 
-2. **Space Scene & Controls**
+2. **Space Scene & Controls** ✅
    - Create starfield background
    - Add player ship model (simple geometric shape)
    - Implement WASD + mouse look controls
    - Add basic physics (velocity, rotation)
 
-3. **Procedural Star Systems**
+3. **Procedural Star Systems** ✅
    - Generate random star positions
    - Add planet markers around stars
    - Implement distance-based LOD for performance
    - Add basic UI for system information
 
 ### Phase 2: Planetary Interaction (Core Loop)
-4. **Landing System**
+4. **Landing System** ✅
    - Planet selection and approach mechanics
    - Transition from space to planetary surface view
    - Basic terrain generation (heightmap-based)
    - Surface movement controls
 
-5. **Resource Collection**
+5. **Resource Collection** ✅
    - Place resource nodes on planets (minerals, energy crystals)
    - Point-and-click harvesting mechanics
    - Basic inventory system (localStorage initially)
    - Visual feedback for collection actions
 
-6. **Idle Automation**
+6. **Idle Automation** ✅
    - Robot entities that can be assigned to tasks
    - Basic AI for resource gathering
    - Offline progress simulation (time-based accumulation)
