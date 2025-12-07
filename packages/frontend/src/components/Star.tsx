@@ -1,7 +1,8 @@
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Mesh, Vector3 } from 'three'
-import { StarSystem } from '../stores/gameStore'
+import { StarSystem, Planet, ResourceNode } from '../stores/gameStore'
+import { useGameStore } from '../stores/gameStore'
 
 interface StarProps {
   system: StarSystem
@@ -23,7 +24,55 @@ export default function Star({ system }: StarProps) {
     return 0.5
   }, [distance])
 
-  const showPlanets = distance < 200
+  const showPlanets = distance < 500
+
+  // Generate planets for this system
+  const planets = useMemo(() => {
+    if (!showPlanets) return []
+
+    const generatedPlanets: Planet[] = []
+    const colors = ['#8B4513', '#228B22', '#4169E1', '#DC143C', '#FFD700', '#FF6347', '#9370DB', '#32CD32']
+
+    for (let i = 0; i < system.planets; i++) {
+      const angle = (i / system.planets) * Math.PI * 2
+      const radius = 5 + i * 2
+      const planetRadius = 2 + Math.random() * 1.5
+
+      // Generate resource nodes on this planet
+      const resources: ResourceNode[] = []
+      const numResources = Math.floor(Math.random() * 8) + 3
+
+      for (let j = 0; j < numResources; j++) {
+        const resourceAngle = Math.random() * Math.PI * 2
+        const resourceRadius = Math.random() * 8
+        const resourceX = Math.cos(resourceAngle) * resourceRadius
+        const resourceZ = Math.sin(resourceAngle) * resourceRadius
+        const resourceY = (Math.random() - 0.5) * 2 // Small height variation
+
+        resources.push({
+          id: `resource-${system.id}-${i}-${j}`,
+          type: Math.random() > 0.5 ? 'mineral' : 'energy',
+          x: resourceX,
+          y: resourceY,
+          z: resourceZ,
+          amount: Math.floor(Math.random() * 50) + 10,
+          depleted: false
+        })
+      }
+
+      generatedPlanets.push({
+        id: `planet-${system.id}-${i}`,
+        name: `${system.name} ${String.fromCharCode(65 + i)}`,
+        systemId: system.id,
+        orbitIndex: i,
+        radius: planetRadius,
+        color: colors[i % colors.length],
+        resources
+      })
+    }
+
+    return generatedPlanets
+  }, [system, showPlanets])
 
   useFrame(() => {
     if (meshRef.current) {
@@ -33,6 +82,13 @@ export default function Star({ system }: StarProps) {
     }
   })
 
+  const { landOnPlanet } = useGameStore()
+  const [hoveredPlanet, setHoveredPlanet] = useState<string | null>(null)
+
+  const handlePlanetClick = (planet: Planet) => {
+    landOnPlanet(planet)
+  }
+
   return (
     <group position={[system.x, system.y, system.z]}>
       {/* Star */}
@@ -41,20 +97,39 @@ export default function Star({ system }: StarProps) {
         <meshBasicMaterial color="#ffff88" />
       </mesh>
 
-      {/* Planet markers (only show when close) */}
+      {/* Planets (only show when close) */}
       {showPlanets && (
         <group>
-          {Array.from({ length: system.planets }, (_, i) => {
-            const angle = (i / system.planets) * Math.PI * 2
-            const radius = 5 + i * 2
+          {planets.map((planet) => {
+            const angle = (planet.orbitIndex / system.planets) * Math.PI * 2
+            const radius = 5 + planet.orbitIndex * 2
             const x = Math.cos(angle) * radius
             const z = Math.sin(angle) * radius
+            const isHovered = hoveredPlanet === planet.id
 
             return (
-              <mesh key={i} position={[x, 0, z]}>
-                <sphereGeometry args={[0.2, 8, 8]} />
-                <meshBasicMaterial color="#4444ff" />
-              </mesh>
+              <group key={planet.id} position={[x, 0, z]}>
+                <mesh
+                  onClick={() => handlePlanetClick(planet)}
+                  onPointerOver={() => setHoveredPlanet(planet.id)}
+                  onPointerOut={() => setHoveredPlanet(null)}
+                  scale={isHovered ? 1.2 : 1}
+                >
+                  <sphereGeometry args={[planet.radius, 12, 12]} />
+                  <meshStandardMaterial 
+                    color={isHovered ? '#ffffff' : planet.color}
+                    emissive={isHovered ? planet.color : '#000000'}
+                    emissiveIntensity={isHovered ? 0.5 : 0}
+                  />
+                </mesh>
+                {/* Hover indicator ring */}
+                {isHovered && (
+                  <mesh rotation={[Math.PI / 2, 0, 0]}>
+                    <ringGeometry args={[planet.radius * 1.3, planet.radius * 1.5, 32]} />
+                    <meshBasicMaterial color="#00ffff" transparent opacity={0.6} />
+                  </mesh>
+                )}
+              </group>
             )
           })}
         </group>

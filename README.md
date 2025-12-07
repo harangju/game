@@ -66,6 +66,78 @@ GCP Deployment:
 - **Idle Vending**: Set up automated kiosks with your bots to "vend" extras offline, yielding passive trades when visitors browse. Opt-in for group features like shared energy pools for collaborative tasks.
 - **Ties to Desiderata**: Fosters social interaction (2) and transparent economy (7) without pressure; inclusive for casual browsing or hardcore alliances. Optimized with Socket.io for real-time sync in hubs.
 
+## How to Play
+
+### Getting Started
+1. **Launch the game** - Open in your browser (no downloads needed)
+2. **Navigate space** - Use WASD keys to fly your ship through the starfield
+3. **Find planets** - Approach star systems to see orbiting planets
+
+### Core Gameplay Loop
+
+#### 1. **Space Exploration**
+- Fly through procedurally generated star systems
+- Stars show as pulsing spheres with orbiting planet markers
+- Get closer to stars to see more detail and planet count
+- Current system information displays in top-left UI
+
+#### 2. **Planetary Landing**
+- **Click on planets** to initiate landing sequence
+- Ship automatically transitions to planetary surface view
+- Start on terrain surface with third-person camera
+
+#### 3. **Surface Exploration**
+- **WASD keys** - Move around the planetary surface
+- **Space** - Move up/fly
+- **Shift** - Move down
+- Terrain is procedurally generated with hills and valleys
+
+#### 4. **Resource Collection**
+- **Manual Harvesting**: Click on resource nodes (brown minerals, yellow energy crystals)
+  - 1-second harvesting animation with visual feedback
+  - Resources added directly to inventory
+- **Robot Automation**: Deploy robots to gather automatically
+  - Click "Create Robot" button to spawn robots on surface
+  - Click robot → click resource to assign gathering task
+  - Robots autonomously move to and harvest resources
+  - Higher efficiency robots gather faster
+
+#### 5. **Robot Management**
+- **Create Robots**: Use "Create Robot" button (costs nothing)
+- **Assign Tasks**: Select robot (turns white) → click resource node
+- **Upgrade Robots**: Spend minerals to increase efficiency
+  - Cost: 10 minerals × current efficiency level
+  - More efficient robots harvest faster and earn more offline
+
+#### 6. **Offline Progress**
+- **Automatic**: Robots continue gathering while you're away
+- **Calculation**: Based on time offline × robot efficiency × 10 per hour
+- **Collection**: Progress automatically added when you return
+- **Persistence**: All progress saved locally in browser
+
+#### 7. **Inventory & Economy**
+- **Resources**: Minerals (for upgrades) and Energy (future use)
+- **Persistence**: Saved automatically in browser storage
+- **Display**: Real-time inventory in bottom-right panel
+
+### Controls Summary
+- **Space Navigation**: WASD (move), Right-click + drag (look around)
+- **Planetary Surface**: WASD (move), Space (up), Shift (down)
+- **Interaction**: Left-click planets/resources/robots
+- **UI**: "Return to Space" button to exit planets
+
+### Tips for Success
+- **Start Small**: Focus on one planet initially
+- **Automate Early**: Create robots to gather while you explore
+- **Upgrade Strategically**: Invest minerals in robot efficiency
+- **Check Offline Progress**: Resources accumulate even when away
+- **Experiment**: Try different planets for varied terrain/resources
+
+### Current Phase Status
+- ✅ **Phase 1**: Space exploration and star systems
+- ✅ **Phase 2**: Planetary interaction and resource collection
+- 🚧 **Phase 3**: Base building (coming soon)
+
 ## Development Roadmap
 
 ### Phase 1: Foundation (Basic Space Exploration)
@@ -132,6 +204,7 @@ GCP Deployment:
     - Real-time position sync via Socket.io
     - Simple chat system
     - View other players' bases/ships
+    - Add DB
 
 11. **Trading System**
     - Direct player-to-player trading interface
