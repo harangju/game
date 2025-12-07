@@ -11,26 +11,12 @@ export default function StarSystem() {
     generateStarSystems()
   }, [generateStarSystems])
 
-  // Find the closest star system to the camera
+  // Set the single Sol system as current
   useEffect(() => {
-    if (starSystems.length === 0) return
-
-    const closest = starSystems.reduce((closest, system) => {
-      const distance = Math.sqrt(
-        Math.pow(system.x - camera.position.x, 2) +
-        Math.pow(system.y - camera.position.y, 2) +
-        Math.pow(system.z - camera.position.z, 2)
-      )
-      const closestDistance = Math.sqrt(
-        Math.pow(closest.x - camera.position.x, 2) +
-        Math.pow(closest.y - camera.position.y, 2) +
-        Math.pow(closest.z - camera.position.z, 2)
-      )
-      return distance < closestDistance ? system : closest
-    })
-
-    setCurrentSystem(closest)
-  }, [starSystems, camera.position, setCurrentSystem])
+    if (starSystems.length > 0) {
+      setCurrentSystem(starSystems[0])
+    }
+  }, [starSystems, setCurrentSystem])
 
   return (
     <group>

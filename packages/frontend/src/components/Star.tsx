@@ -18,60 +18,20 @@ export default function Star({ system }: StarProps) {
 
   // Level of Detail: Different rendering based on distance
   const size = useMemo(() => {
-    if (distance < 100) return 2
-    if (distance < 300) return 1.5
-    if (distance < 600) return 1
-    return 0.5
+    if (distance < 500) return 25
+    if (distance < 1500) return 20
+    if (distance < 3000) return 15
+    if (distance < 5000) return 10
+    if (distance < 10000) return 5
+    return 2
   }, [distance])
 
-  const showPlanets = distance < 500
+  const showPlanets = distance < 10000
 
-  // Generate planets for this system
+  // Use pre-generated planets from the system
   const planets = useMemo(() => {
-    if (!showPlanets) return []
-
-    const generatedPlanets: Planet[] = []
-    const colors = ['#8B4513', '#228B22', '#4169E1', '#DC143C', '#FFD700', '#FF6347', '#9370DB', '#32CD32']
-
-    for (let i = 0; i < system.planets; i++) {
-      const angle = (i / system.planets) * Math.PI * 2
-      const radius = 5 + i * 2
-      const planetRadius = 2 + Math.random() * 1.5
-
-      // Generate resource nodes on this planet
-      const resources: ResourceNode[] = []
-      const numResources = Math.floor(Math.random() * 8) + 3
-
-      for (let j = 0; j < numResources; j++) {
-        const resourceAngle = Math.random() * Math.PI * 2
-        const resourceRadius = Math.random() * 8
-        const resourceX = Math.cos(resourceAngle) * resourceRadius
-        const resourceZ = Math.sin(resourceAngle) * resourceRadius
-        const resourceY = (Math.random() - 0.5) * 2 // Small height variation
-
-        resources.push({
-          id: `resource-${system.id}-${i}-${j}`,
-          type: Math.random() > 0.5 ? 'mineral' : 'energy',
-          x: resourceX,
-          y: resourceY,
-          z: resourceZ,
-          amount: Math.floor(Math.random() * 50) + 10,
-          depleted: false
-        })
-      }
-
-      generatedPlanets.push({
-        id: `planet-${system.id}-${i}`,
-        name: `${system.name} ${String.fromCharCode(65 + i)}`,
-        systemId: system.id,
-        orbitIndex: i,
-        radius: planetRadius,
-        color: colors[i % colors.length],
-        resources
-      })
-    }
-
-    return generatedPlanets
+    if (!showPlanets || !system.planets) return []
+    return system.planets
   }, [system, showPlanets])
 
   useFrame(() => {
@@ -96,13 +56,23 @@ export default function Star({ system }: StarProps) {
         <sphereGeometry args={[size, 16, 16]} />
         <meshBasicMaterial color="#ffff88" />
       </mesh>
+      {/* Sun light - brighter */}
+      <pointLight
+        position={[0, 0, 0]}
+        intensity={10}
+        color="#ffff88"
+        distance={10000}
+      />
 
       {/* Planets (only show when close) */}
       {showPlanets && (
         <group>
           {planets.map((planet) => {
-            const angle = (planet.orbitIndex / system.planets) * Math.PI * 2
-            const radius = 5 + planet.orbitIndex * 2
+            // Pre-calculated positions from generation
+            const angle = (planet.orbitIndex / system.planets.length) * Math.PI * 2
+            const radius = planet.orbitIndex < system.planets.length / 2 
+              ? (4 + planet.orbitIndex * 3) * 10 
+              : (20 + (planet.orbitIndex - Math.floor(system.planets.length / 2)) * 8) * 10
             const x = Math.cos(angle) * radius
             const z = Math.sin(angle) * radius
             const isHovered = hoveredPlanet === planet.id
@@ -118,10 +88,19 @@ export default function Star({ system }: StarProps) {
                   <sphereGeometry args={[planet.radius, 12, 12]} />
                   <meshStandardMaterial 
                     color={isHovered ? '#ffffff' : planet.color}
-                    emissive={isHovered ? planet.color : '#000000'}
-                    emissiveIntensity={isHovered ? 0.5 : 0}
+                    emissive={planet.color}
+                    emissiveIntensity={isHovered ? 2 : 1}
+                    roughness={planet.orbitIndex < system.planets.length / 2 ? 0.9 : 0.3}
+                    metalness={planet.orbitIndex < system.planets.length / 2 ? 0.1 : 0.4}
                   />
                 </mesh>
+                {/* Planet light - local glow */}
+                <pointLight
+                  position={[0, 0, 0]}
+                  intensity={planet.orbitIndex < system.planets.length / 2 ? 0.5 : 1.5} // Dimmer for rocky, brighter for gas
+                  color={planet.color}
+                  distance={Math.max(planet.radius * 20, 50)}
+                />
                 {/* Hover indicator ring */}
                 {isHovered && (
                   <mesh rotation={[Math.PI / 2, 0, 0]}>

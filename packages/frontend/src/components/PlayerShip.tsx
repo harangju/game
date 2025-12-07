@@ -16,7 +16,7 @@ export default function PlayerShip() {
 
     // Position ship in bottom lower-middle of screen (hover view)
     // Centered horizontally, lower vertically, forward enough to be visible
-    const offset = new Vector3(0, -3.5, -4) // Centered, lower, forward
+    const offset = new Vector3(0, -1.8, -3) // Closer for visibility, subtle float
     offset.applyQuaternion(camera.quaternion)
     groupRef.current.position.copy(camera.position).add(offset)
 
@@ -24,20 +24,20 @@ export default function PlayerShip() {
     groupRef.current.rotation.copy(camera.rotation)
 
     // Add subtle floating animation
-    groupRef.current.position.y += Math.sin(state.clock.elapsedTime * 2) * 0.1
+    groupRef.current.position.y += Math.sin(state.clock.elapsedTime * 2) * 0.02 // Subtle float
   })
 
   return (
     <group ref={groupRef}>
-      {/* Main ship body - bigger and brighter */}
+      {/* Main ship body - smaller */}
       <mesh>
-        <boxGeometry args={[1.2, 0.5, 3]} />
+        <boxGeometry args={[0.6, 0.25, 1.5]} />
         <meshStandardMaterial color="#00aaff" metalness={0.9} roughness={0.1} emissive="#002244" emissiveIntensity={0.3} />
       </mesh>
 
-      {/* Ship nose/cone (front) - brighter */}
-      <mesh position={[0, 0, -1.8]}>
-        <coneGeometry args={[0.6, 1.2, 8]} />
+      {/* Ship nose/cone (front) - smaller */}
+      <mesh position={[0, 0, -0.9]}>
+        <coneGeometry args={[0.3, 0.6, 8]} />
         <meshStandardMaterial color="#00ffff" emissive="#00aaff" emissiveIntensity={1} />
       </mesh>
 
@@ -47,30 +47,30 @@ export default function PlayerShip() {
         <meshBasicMaterial color="#0088ff" transparent opacity={0.9} />
       </mesh>
 
-      {/* Wing details - more visible */}
-      <mesh position={[-1, 0, 0]} rotation={[0, 0, Math.PI / 6]}>
-        <boxGeometry args={[1.2, 0.15, 0.5]} />
+      {/* Wing details - smaller */}
+      <mesh position={[-0.5, 0, 0]} rotation={[0, 0, Math.PI / 6]}>
+        <boxGeometry args={[0.6, 0.075, 0.25]} />
         <meshStandardMaterial color="#0066aa" emissive="#003366" emissiveIntensity={0.2} />
       </mesh>
-      <mesh position={[1, 0, 0]} rotation={[0, 0, -Math.PI / 6]}>
-        <boxGeometry args={[1.2, 0.15, 0.5]} />
+      <mesh position={[0.5, 0, 0]} rotation={[0, 0, -Math.PI / 6]}>
+        <boxGeometry args={[0.6, 0.075, 0.25]} />
         <meshStandardMaterial color="#0066aa" emissive="#003366" emissiveIntensity={0.2} />
       </mesh>
 
-      {/* Engine glow effect - brighter */}
+      {/* Engine glow effect - adjusted */}
       <pointLight
-        position={[0, 0, 2.4]}
-        intensity={2}
+        position={[0, 0, 0.75]}
+        intensity={1}
         color="#00ffff"
-        distance={12}
+        distance={6}
       />
       
       {/* Additional glow around ship */}
       <pointLight
         position={[0, 0, 0]}
-        intensity={0.5}
+        intensity={0.25}
         color="#00aaff"
-        distance={8}
+        distance={4}
       />
     </group>
   )

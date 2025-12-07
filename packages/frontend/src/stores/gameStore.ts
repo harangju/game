@@ -6,7 +6,7 @@ export interface StarSystem {
   x: number
   y: number
   z: number
-  planets: number
+  planets: Planet[]
 }
 
 export interface Planet {
@@ -99,7 +99,7 @@ const processOfflineProgressOnLoad = () => {
 export const useGameStore = create<GameState>((set, get) => ({
   // Space navigation
   currentSystem: null,
-  playerPosition: [0, 0, 0],
+  playerPosition: [0, 0, 3000],
   starSystems: [],
 
   // Planetary mode
@@ -142,26 +142,85 @@ export const useGameStore = create<GameState>((set, get) => ({
   setPlayerPosition: (position) => set({ playerPosition: position }),
 
   generateStarSystems: () => {
-    const systems: StarSystem[] = []
-    const numSystems = 50
+    const numPlanets = Math.floor(Math.random() * 5) + 4 // 4-8 planets
+    const rockyColors = ['#8B4513', '#A0522D', '#CD853F', '#D2691E']
+    const gasColors = ['#4169E1', '#9370DB', '#FF6347', '#FFD700']
+    const innerCount = Math.floor(numPlanets / 2)
 
-    for (let i = 0; i < numSystems; i++) {
-      const x = (Math.random() - 0.5) * 2000
-      const y = (Math.random() - 0.5) * 2000
-      const z = (Math.random() - 0.5) * 2000
-      const planets = Math.floor(Math.random() * 8) + 1
+    const generatedPlanets: Planet[] = []
 
-      systems.push({
-        id: `system-${i}`,
-        name: `System ${i + 1}`,
-        x,
-        y,
-        z,
-        planets
+    for (let i = 0; i < numPlanets; i++) {
+      let orbitRadius, planetRadius, color, isInner
+
+      if (i < innerCount) {
+        // Inner rocky planets
+        isInner = true
+        orbitRadius = (4 + i * 3) * 50 // 200, 350, 500, ...
+        planetRadius = 0.5 + Math.random()
+        color = rockyColors[i % rockyColors.length]
+      } else {
+        // Outer gas giants
+        isInner = false
+        const outerIndex = i - innerCount
+        orbitRadius = (20 + outerIndex * 8) * 50 // 1000, 1400, 1800, ...
+        planetRadius = 2.5 + Math.random() * 1.5
+        color = gasColors[(i - innerCount) % gasColors.length]
+      }
+
+      // Generate resource nodes
+      const resources: ResourceNode[] = []
+      const numResources = Math.floor(Math.random() * 8) + 3
+
+      for (let j = 0; j < numResources; j++) {
+        const resourceAngle = Math.random() * Math.PI * 2
+        const resourceRadius = Math.random() * 8
+        const resourceX = Math.cos(resourceAngle) * resourceRadius
+        const resourceZ = Math.sin(resourceAngle) * resourceRadius
+        const resourceY = (Math.random() - 0.5) * 2
+
+        // Bias resources by planet type
+        let type: 'mineral' | 'energy'
+        if (isInner) {
+          type = Math.random() < 0.7 ? 'mineral' : 'energy'
+        } else {
+          type = Math.random() < 0.3 ? 'mineral' : 'energy'
+        }
+
+        resources.push({
+          id: `resource-sol-${i}-${j}`,
+          type,
+          x: resourceX,
+          y: resourceY,
+          z: resourceZ,
+          amount: Math.floor(Math.random() * 50) + 10,
+          depleted: false
+        })
+      }
+
+      generatedPlanets.push({
+        id: `planet-sol-${i}`,
+        name: `Sol ${String.fromCharCode(65 + i)}`,
+        systemId: 'sol',
+        orbitIndex: i,
+        radius: planetRadius,
+        color,
+        resources
       })
     }
 
-    set({ starSystems: systems })
+    const solSystem: StarSystem = {
+      id: 'sol',
+      name: 'Sol',
+      x: 0,
+      y: 0,
+      z: 0,
+      planets: generatedPlanets
+    }
+
+    set({ 
+      starSystems: [solSystem],
+      currentSystem: solSystem 
+    })
   },
 
   landOnPlanet: (planet) => {
